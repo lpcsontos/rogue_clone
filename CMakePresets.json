@@ -1,0 +1,53 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": { "major": 3, "minor": 25, "patch": 0 },
+
+  "configurePresets": [
+    {
+      "name": "linux",
+      "displayName": "Linux (native executable)",
+      "description": "Plain Linux build. Output: build/bin/<name>",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": "windows",
+      "displayName": "Windows (.exe cross-compiled on Linux)",
+      "description": "Standalone Windows exe via MinGW-w64. Output: build-win/bin/<name>.exe",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-win",
+      "toolchainFile": "${sourceDir}/mingw-w64-toolchain.cmake",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ],
+
+  "buildPresets": [
+    { "name": "linux",   "configurePreset": "linux" },
+    { "name": "windows", "configurePreset": "windows" }
+  ],
+
+  "packagePresets": [
+    { "name": "windows", "configurePreset": "windows" }
+  ],
+
+  "workflowPresets": [
+    {
+      "name": "linux",
+      "displayName": "Build the Linux executable",
+      "steps": [
+        { "type": "configure", "name": "linux" },
+        { "type": "build",     "name": "linux" }
+      ]
+    },
+    {
+      "name": "windows",
+      "displayName": "Build the Windows .exe + setup.exe",
+      "steps": [
+        { "type": "configure", "name": "windows" },
+        { "type": "build",     "name": "windows" },
+        { "type": "package",   "name": "windows" }
+      ]
+    }
+  ]
+}
