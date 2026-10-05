@@ -1,9 +1,11 @@
+#pragma once
+
 #include <random>
 #include <iostream>
 #include <vector>
 #include <algorithm>
 
-int randomRange(std::mt19937& prng, int min, int max) {
+inline int randomRange(std::mt19937& prng, int min, int max) {
     int m, mm;
     m = std::min(min, max);
     mm = std::max(min, max);
@@ -11,7 +13,7 @@ int randomRange(std::mt19937& prng, int min, int max) {
     return dist(prng);
 }
 
-float lerp(float start, float end, float t) {
+inline float lerp(float start, float end, float t) {
     return start + t * (end - start);
 }
 
@@ -62,7 +64,7 @@ public:
     }
 };
 
-float calcWeight(const Room& r1, const Room& r2) {
+inline float calcWeight(const Room& r1, const Room& r2) {
     float c1x = r1.x + r1.w / 2.0f;
     float c1y = r1.y + r1.h / 2.0f;
     float c2x = r2.x + r2.w / 2.0f;
@@ -70,19 +72,20 @@ float calcWeight(const Room& r1, const Room& r2) {
     return std::sqrt((c1x - c2x) * (c1x - c2x) + (c1y - c2y) * (c1y - c2y));
 }
 
-std::vector<Edge> edgeCalculator(std::vector<Room> rooms){
+inline std::vector<Edge> edgeCalculator(const std::vector<Room>& rooms){
     std::vector<Edge> ret;
+    if (rooms.size() < 2) return ret;
 
-    for(int i = 0; i < rooms.size()-1; i++){
-        for(int j = i+1; j < rooms.size(); j++){
-            ret.push_back(Edge{i,j,calcWeight(rooms.at(i), rooms.at(j))});
+    for(int i = 0; i < (int)rooms.size() - 1; i++){
+        for(int j = i+1; j < (int)rooms.size(); j++){
+            ret.push_back(Edge{i, j, calcWeight(rooms.at(i), rooms.at(j))});
         }
     }
 
     return ret;
 }
 
-std::vector<Edge> kruskalMST(int vertices, std::vector<Edge>& edges) {
+inline std::vector<Edge> kruskalMST(int vertices, std::vector<Edge>& edges) {
     std::vector<Edge> mst; 
     std::sort(edges.begin(), edges.end());
 
